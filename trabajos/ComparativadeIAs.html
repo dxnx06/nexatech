@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comparativa de Modelos de IA</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f4;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1, h2 {
+      color: #333;
+    }
+    .controls {
+      margin-bottom: 20px;
+      padding: 15px;
+      background-color: #e9ecef;
+      border-radius: 5px;
+    }
+    .controls label {
+      margin-right: 10px;
+    }
+    .chart-container {
+      margin-top: 20px;
+    }
+    .chart {
+      height: 400px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Comparativa de Modelos de IA</h1>
+    <p>Selecciona los modelos que deseas comparar y las gráficas se actualizarán en tiempo real.</p>
+
+    <div class="controls">
+      <h3>Seleccionar modelos</h3>
+      <label><input type="checkbox" id="model-ibm" checked> IBM Granite-4-h-tiny</label>
+      <label><input type="checkbox" id="model-google" checked> Google Gemma-3-12b</label>
+      <label><input type="checkbox" id="model-openai" checked> OpenAI GPT-OSS-20B</label>
+      <label><input type="checkbox" id="model-liquid" checked> Liquid LFM2-1.2b</label>
+      <label><input type="checkbox" id="model-essentialai" checked> EssentialAI RNJ-1</label>
+    </div>
+
+    <div class="chart-container">
+      <h2>Velocidad (tokens por segundo)</h2>
+      <canvas id="chart-speed" class="chart"></canvas>
+    </div>
+
+    <div class="chart-container">
+      <h2>Coste relativo (PTK)</h2>
+      <canvas id="chart-cost" class="chart"></canvas>
+    </div>
+
+    <div class="chart-container">
+      <h2>Calidad en acertijos (%)</h2>
+      <canvas id="chart-quality" class="chart"></canvas>
+    </div>
+
+    <div class="chart-container">
+      <h2>Velocidad vs Coste (gráfico de dispersión)</h2>
+      <canvas id="chart-scatter" class="chart"></canvas>
+    </div>
+
+    <div class="chart-container">
+      <h2>Calidad en acertijos según longitud del prompt</h2>
+      <canvas id="chart-quality-prompt" class="chart"></canvas>
+    </div>
+
+    <div class="chart-container">
+      <h2>Calidad en acertijos según longitud del contexto</h2>
+      <canvas id="chart-quality-context" class="chart"></canvas>
+    </div>
+  </div>
+
+  <script>
+    // Datos de los modelos (extraídos del documento)
+    const models = {
+      'ibm': {
+        name: 'IBM Granite-4-h-tiny',
+        speed: 44, // tk/s
+        cost: 1.0, // coste relativo (PTK)
+        quality: 85, // % aciertos en acertijos
+        qualityPrompt: [88, 86, 82, 78], // calidad con prompts corto, medio, largo, muy largo
+        qualityContext: [86, 84, 80, 75] // calidad con contextos corto, medio, largo, muy largo
+      },
+      'google': {
+        name: 'Google Gemma-3-12b',
+        speed: 14,
+        cost: 1.5,
+        quality: 90,
+        qualityPrompt: [72, 70, 68, 65],
+        qualityContext: [75, 69, 66, 62]
+      },
+      'openai': {
+        name: 'OpenAI GPT-OSS-20B',
+        speed: 33,
+        cost: 2.0,
+        quality: 80,
+        qualityPrompt: [82, 80, 78, 75],
+        qualityContext: [81, 79, 76, 72]
+      },
+      'liquid': {
+        name: 'Liquid LFM2-1.2b',
+        speed: 72,
+        cost: 0.8,
+        quality: 60,
+        qualityPrompt: [65, 62, 58, 55],
+        qualityContext: [64, 60, 56, 52]
+      },
+      'essentialai': {
+        name: 'EssentialAI RNJ-1',
+        speed: 19,
+        cost: 1.2,
+        quality: 50,
+        qualityPrompt: [55, 52, 48, 45],
+        qualityContext: [54, 50, 46, 42]
+      }
+    };
+
+    // Etiquetas para prompts y contextos
+    const promptLabels = ['Corto', 'Medio', 'Largo', 'Muy largo'];
+    const contextLabels = ['Corto', 'Medio', 'Largo', 'Muy largo'];
+
+    // Gráfica de velocidad (tk/s)
+    const ctxSpeed = document.getElementById('chart-speed').getContext('2d');
+    const chartSpeed = new Chart(ctxSpeed, {
+      type: 'bar',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'Velocidad (tk/s)',
+          data: [],
+          backgroundColor: 'rgba(54, 162, 235, 0.6)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Tokens por segundo (tk/s)'
+            }
+          }
+        }
+      }
+    });
+
+    // Gráfica de coste (PTK)
+    const ctxCost = document.getElementById('chart-cost').getContext('2d');
+    const chartCost = new Chart(ctxCost, {
+      type: 'bar',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'Coste relativo (PTK)',
+          data: [],
+          backgroundColor: 'rgba(255, 99, 132, 0.6)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Coste relativo (PTK)'
+            }
+          }
+        }
+      }
+    });
+
+    // Gráfica de calidad en acertijos (%)
+    const ctxQuality = document.getElementById('chart-quality').getContext('2d');
+    const chartQuality = new Chart(ctxQuality, {
+      type: 'bar',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'Calidad en acertijos (%)',
+          data: [],
+          backgroundColor: 'rgba(75, 192, 192, 0.6)',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100,
+            title: {
+              display: true,
+              text: 'Porcentaje de aciertos (%)'
+            }
+          }
+        }
+      }
+    });
+
+    // Gráfica de dispersión: velocidad vs coste
+    const ctxScatter = document.getElementById('chart-scatter').getContext('2d');
+    const chartScatter = new Chart(ctxScatter, {
+      type: 'scatter',
+      data: {
+        datasets: []
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: {
+            type: 'linear',
+            position: 'bottom',
+            title: {
+              display: true,
+              text: 'Coste relativo (PTK)'
+            }
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'Velocidad (tk/s)'
+            }
+          }
+        }
+      }
+    });
+
+    // Gráfica de calidad vs longitud del prompt
+    const ctxQualityPrompt = document.getElementById('chart-quality-prompt').getContext('2d');
+    const chartQualityPrompt = new Chart(ctxQualityPrompt, {
+      type: 'line',
+      data: {
+        labels: promptLabels,
+        datasets: []
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100,
+            title: {
+              display: true,
+              text: 'Calidad en acertijos (%)'
+            }
+          }
+        }
+      }
+    });
+
+    // Gráfica de calidad vs longitud del contexto
+    const ctxQualityContext = document.getElementById('chart-quality-context').getContext('2d');
+    const chartQualityContext = new Chart(ctxQualityContext, {
+      type: 'line',
+      data: {
+        labels: contextLabels,
+        datasets: []
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100,
+            title: {
+              display: true,
+              text: 'Calidad en acertijos (%)'
+            }
+          }
+        }
+      }
+    });
+
+    // Función para actualizar todas las gráficas
+    function updateCharts() {
+      const selectedModels = [];
+      if (document.getElementById('model-ibm').checked) selectedModels.push('ibm');
+      if (document.getElementById('model-google').checked) selectedModels.push('google');
+      if (document.getElementById('model-openai').checked) selectedModels.push('openai');
+      if (document.getElementById('model-liquid').checked) selectedModels.push('liquid');
+      if (document.getElementById('model-essentialai').checked) selectedModels.push('essentialai');
+
+      // Actualizar gráfica de velocidad
+      chartSpeed.data.labels = selectedModels.map(id => models[id].name);
+      chartSpeed.data.datasets[0].data = selectedModels.map(id => models[id].speed);
+      chartSpeed.update();
+
+      // Actualizar gráfica de coste
+      chartCost.data.labels = selectedModels.map(id => models[id].name);
+      chartCost.data.datasets[0].data = selectedModels.map(id => models[id].cost);
+      chartCost.update();
+
+      // Actualizar gráfica de calidad
+      chartQuality.data.labels = selectedModels.map(id => models[id].name);
+      chartQuality.data.datasets[0].data = selectedModels.map(id => models[id].quality);
+      chartQuality.update();
+
+      // Actualizar gráfica de dispersión
+      chartScatter.data.datasets = selectedModels.map(id => ({
+        label: models[id].name,
+        data: [{ x: models[id].cost, y: models[id].speed }],
+        backgroundColor: getRandomColor(),
+        borderColor: getRandomColor(),
+        borderWidth: 1,
+        pointRadius: 8
+      }));
+      chartScatter.update();
+
+      // Actualizar gráfica de calidad vs prompt
+      chartQualityPrompt.data.datasets = selectedModels.map(id => ({
+        label: models[id].name,
+        data: models[id].qualityPrompt,
+        borderColor: getRandomColor(),
+        backgroundColor: 'rgba(0,0,0,0)',
+        borderWidth: 2,
+        fill: false
+      }));
+      chartQualityPrompt.update();
+
+      // Actualizar gráfica de calidad vs contexto
+      chartQualityContext.data.datasets = selectedModels.map(id => ({
+        label: models[id].name,
+        data: models[id].qualityContext,
+        borderColor: getRandomColor(),
+        backgroundColor: 'rgba(0,0,0,0)',
+        borderWidth: 2,
+        fill: false
+      }));
+      chartQualityContext.update();
+    }
+
+    // Función para generar un color aleatorio
+    function getRandomColor() {
+      const letters = '0123456789ABCDEF';
+      let color = '#';
+      for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    }
+
+    // Escuchar cambios en los checkboxes
+    document.querySelectorAll('.controls input[type="checkbox"]').forEach(checkbox => {
+      checkbox.addEventListener('change', updateCharts);
+    });
+
+    // Inicializar gráficas
+    updateCharts();
+
+
+  </script>
+
+  <table border="1" cellspacing="0" cellpadding="6">
+  <thead>
+    <tr>
+      <th>Características</th>
+      <th>IBM Granite-4-h-tiny</th>
+      <th>Google Gemma-3-12B</th>
+      <th>OpenAI GPT-OSS-20B</th>
+      <th>Liquid LFM2-1.2B</th>
+      <th>Essential air-nj-1</th>
+    </tr>
+  </thead>
+  <tbody>
+
+
+   
+    <tr>
+      <td>Calidad de respuesta de acertijos</td>
+      <td>Resuelve aprox. el 50&nbsp;% de los acertijos; respuestas correctas pero con fallos.</td>
+      <td>Resuelve el 100&nbsp;% de los acertijos de prueba con explicaciones claras, por ejemplo fue capaz de resolver el acertijo "oro parece platano es", dicho acertijo no pudo ser resuelto por la mayoría de las IAs.</td>
+      <td>Resuelve el 100&nbsp;% de los acertijos con razonamiento detallado, ya que explica su razonamiento y siempre da respuestas coherentes o como mínimo entendibles.</td>
+      <td>No acierta los acertijos; respuestas creativas pero incorrectas.</td>
+      <td>Rendimiento irregular, a veces no resuelve o se desvía del problema.</td>
+    </tr>
+    <tr>
+      <td>Velocidad (tokens/s)</td>
+      <td>≈ 44&nbsp;tk/s en las pruebas.</td>
+      <td>≈ 14&nbsp;tk/s (más lento, pero estable).</td>
+      <td>≈ 34&nbsp;tk/s, velocidad media para un 20B.</td>
+      <td>≈ 74&nbsp;tk/s, el más rápido de todos.</td>
+      <td>≈ 18&nbsp;tk/s (estimado por tamaño y perfil).</td>
+    </tr>
+    <tr>
+      <td>Consumo de tokens por acertijo (PTK)</td>
+      <td>≈ 388 tokens totales por acertijo.</td>
+      <td>≈ 226 tokens por acertijo.</td>
+      <td>≈ 558 tokens por acertijo, el que más contexto usa.</td>
+      <td>≈ 178 tokens por acertijo, el más eficiente en PTK.</td>
+      <td>Uso moderado de tokens, en torno a un modelo mediano.</td>
+    </tr>
+ 
+  </tbody>
+</table>
+
+</body>
+</html>
