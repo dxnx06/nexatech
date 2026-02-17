@@ -440,3 +440,198 @@
                 <div class="bloque-comando">
                     <span class="tag"><i class="fab fa-github"></i> Axolotl</span>
                     <div class="comando">git clone https://github.com/OpenAccess-AI-Collective/axolotl<br>cd
+                                        cd axolotl && pip install -e .[flash-attn,deepspeed] && cd ..</div>
+                    <div class="explicacion">Clona e instala Axolotl (fine-tuning avanzado) con optimizaciones FlashAttention y DeepSpeed.[file:1]</div>
+                </div>
+                <div class="bloque-comando">
+                    <span class="tag"><i class="fas fa-cube"></i> llama.cpp</span>
+                    <div class="comando">git clone https://github.com/ggerganov/llama.cpp<br>pip install -r llama.cpp/requirements.txt</div>
+                    <div class="explicacion">Herramienta para convertir y ejecutar modelos en formato GGUF eficiente.[file:1]</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. DATOS -->
+        <section id="datos" class="section">
+            <h2><i class="fas fa-database"></i> 3. Dataset JSONL</h2>
+            <p>Crear archivo <code>recetas.jsonl</code> con pares instrucción-respuesta en formato Alpaca:</p>
+            
+            <pre data-lang="JSONL"><code>{
+  "instruction": "Tengo tomates, mozzarella y albahaca.",
+  "output": "Ensalada Caprese: Alterna rodajas de tomate y mozzarella. Añade albahaca, sal, pimienta y aceite."
+}
+{
+  "instruction": "Garbanzos, espinacas y pimentón.",
+  "output": "Potaje de Garbanzos: Sofríe ajo y pimentón. Añade garbanzos y espinacas. Cocina con caldo."
+}
+{
+  "instruction": "Lentejas, chorizo y zanahoria.",
+  "output": "Lentejas con Chorizo: Cuece lentejas con zanahoria y chorizo. Añade sofrito opcional."
+}</code></pre>
+
+            <div class="bloque-comando">
+                <span class="tag"><i class="fas fa-edit"></i> Formato Alpaca</span>
+                <div class="comando">recetas.jsonl</div>
+                <div class="explicacion">Cada línea es un JSON independiente. Axolotl lo leerá línea por línea para entrenar el modelo.[file:1]</div>
+            </div>
+        </section>
+
+        <!-- 4. CONFIG -->
+        <section id="config" class="section">
+            <h2><i class="fas fa-file-code"></i> 4. Configuración YAML</h2>
+            <p>Crear <code>configchef.yml</code> en la raíz del proyecto:</p>
+            
+            <pre data-lang="YAML"><code>base_model: microsoft/Phi-3-mini-4k-instruct
+model_type: AutoModelForCausalLM
+tokenizer_type: AutoTokenizer
+load_in_8bit: true
+
+datasets:
+  - path: recetas.jsonl
+    type: alpaca
+
+adapter: qlora
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+
+epochs: 4
+batch_size: 2
+gradient_accumulation_steps: 4
+output_dir: lora-out</code></pre>
+
+            <div class="comandos-grid">
+                <div class="bloque-comando">
+                    <span class="tag"><i class="fas fa-model-3d"></i> Modelo base</span>
+                    <div class="comando">microsoft/Phi-3-mini-4k-instruct</div>
+                    <div class="explicacion">Modelo preentrenado de Microsoft (3.8B parámetros, eficiente).[file:1]</div>
+                </div>
+                <div class="bloque-comando">
+                    <span class="tag"><i class="fas fa-layer-group"></i> QLoRA</span>
+                    <div class="comando">load_in_8bit: true + adapter: qlora</div>
+                    <div class="explicacion">Carga modelo en 8 bits + fine-tuning eficiente solo en adapters LoRA.[file:1]</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. FINETUNING -->
+        <section id="finetuning" class="section">
+            <h2><i class="fas fa-rocket"></i> 5. Fine Tuning</h2>
+            
+            <div class="bloque-comando">
+                <span class="tag"><i class="fas fa-play"></i> Entrenamiento</span>
+                <div class="comando">accelerate launch -m axolotl.cli.train configchef.yml</div>
+                <div class="explicacion">Ejecuta el fine-tuning completo usando la configuración YAML. Los pesos LoRA se guardan en <code>lora-out</code>.[file:1]</div>
+            </div>
+
+            <p><strong>Duración:</strong> Depende del dataset y hardware (horas en GPU 8GB+). Monitorea VRAM con <code>nvidia-smi</code>.</p>
+        </section>
+
+        <!-- 6. MERGE -->
+        <section id="merge" class="section">
+            <h2><i class="fas fa-compress-arrows-alt"></i> 6. Merge LoRA</h2>
+            
+            <div class="comandos-grid">
+                <div class="bloque-comando">
+                    <span class="tag"><i class="fas fa-folder"></i> Navegar</span>
+                    <div class="comando">cd axolotl</div>
+                    <div class="explicacion">Cambiar al directorio de Axolotl para usar sus comandos.[file:1]</div>
+                </div>
+                <div class="bloque-comando">
+                    <span class="tag"><i class="fas fa-merge"></i> Fusionar</span>
+                    <div class="comando">accelerate launch -m axolotl.cli.merge_lora configchef.yml lora_model_dir=./../lora-out --threads 8</div>
+                    <div class="explicacion">Combina modelo base + LoRA → modelo fusionado completo en <code>merged/</code>.[file:1]</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. CUANTIZACION -->
+        <section id="cuantizacion" class="section">
+            <h2><i class="fas fa-compress"></i> 7. Cuantización GGUF</h2>
+            
+            <div class="comandos-grid">
+                <div class="bloque-comando">
+                    <span class="tag"><i class="fas fa-exchange-alt"></i> Navegar</span>
+                    <div class="comando">cd ../llama.cpp</div>
+                    <div class="explicacion">Ir al directorio llama.cpp para conversión.[file:1]</div>
+                </div>
+                <div class="bloque-comando">
+                    <span class="tag"><i class="fas fa-file-export"></i> Convertir</span>
+                    <div class="comando">python convert_hf_to_gguf.py ../merged/ --outfile chef-bot-fp16.gguf</div>
+                    <div class="explicacion">Transforma modelo HuggingFace → GGUF FP16 (precisión completa).[file:1]</div>
+                </div>
+                <div class="bloque-comando">
+                    <span class="tag"><i class="fas fa-compress-arrows-alt"></i> Cuantizar</span>
+                    <div class="comando">./llama-quantize chef-bot-fp16.gguf chef-bot-q4.gguf q4_k_m</div>
+                    <div class="explicacion">Reduce de FP16 → 4 bits (Q4_K_M). Reduce tamaño ~4x manteniendo calidad.[file:1]</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. PRUEBA -->
+        <section id="prueba" class="section">
+            <h2><i class="fas fa-play-circle"></i> 8. Prueba en LM Studio</h2>
+            
+            <div class="comandos-grid">
+                <div class="bloque-comando">
+                    <span class="tag"><i class="fas fa-download"></i> Descargar</span>
+                    <div class="comando">lmstudio.ai</div>
+                    <div class="explicacion">Descarga LM Studio (aplicación gratuita para Windows/Mac/Linux).[file:1]</div>
+                </div>
+                <div class="bloque-comando">
+                    <span class="tag"><i class="fas fa-copy"></i> Instalar modelo</span>
+                    <div class="comando">Copiar chef-bot-q4.gguf → carpeta modelos</div>
+                    <div class="explicacion">LM Studio detectará automáticamente el modelo GGUF.[file:1]</div>
+                </div>
+                <div class="bloque-comando">
+                    <span class="tag"><i class="fas fa-robot"></i> Test</span>
+                    <div class="comando">"Tengo aguacates, cebolla, tomate y lima"</div>
+                    <div class="explicacion">¡Tu chef-bot debería generar una receta guacamole! Si falla, añade más ejemplos al JSONL y repite desde fine-tuning.[file:1]</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div style="margin-bottom: 1rem;">
+            <i class="fas fa-brain" style="color: #667eea; margin-right: 0.5rem;"></i>
+            Creación de LLM Chef-Bot • Daniel Redondo Olmos • 2026
+        </div>
+        <div>Basado en Axolotl + llama.cpp + Phi-3 • <i class="fas fa-heart" style="color: #ef4444;"></i></div>
+    </footer>
+
+    <script>
+        // Smooth scroll para enlaces del índice
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Animación scroll para bloques
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        });
+
+        document.querySelectorAll('.bloque-comando').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
+
