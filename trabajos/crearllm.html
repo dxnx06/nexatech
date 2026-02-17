@@ -1,0 +1,123 @@
+<!-- 1. REQUISITOS -->
+<section id="requisitos">
+    <h2>1. Requisitos iniciales</h2>
+
+    <div class="bloque-comando">
+        <strong>GPU NVIDIA con CUDA 12.1+ y 8GB+ VRAM</strong><br>
+        Necesitas una GPU moderna compatible con CUDA 12.1 o superior y al menos 8 GB de memoria de vídeo
+        para poder entrenar y ajustar el modelo de lenguaje de forma eficiente.
+    </div>
+
+    <div class="bloque-comando">
+        <strong>Python 3.11/3.12 en entorno virtual (venv)</strong><br>
+        Se recomienda usar Python 3.11 o 3.12 dentro de un entorno virtual para aislar dependencias y evitar
+        problemas con otras versiones instaladas en el sistema.
+    </div>
+
+    <div class="bloque-comando">
+        <strong>Git, ~50GB de espacio en disco</strong><br>
+        Git se usa para clonar los repositorios de Axolotl y llama.cpp, y el espacio en disco es necesario
+        para modelos, datos y resultados de entrenamiento.
+    </div>
+
+    <div class="bloque-comando">
+        <strong>Comando clave: <code>nvidia-smi</code></strong><br>
+        Este comando muestra si la GPU está detectada, qué drivers están instalados y cuánta memoria tiene
+        disponible, comprobando que el entorno está listo para entrenar.
+    </div>
+</section>
+
+<!-- 2. ENTORNO -->
+<section id="entorno">
+    <h2>2. Montar el entorno</h2>
+
+    <div class="grupo-comandos">
+        <div class="bloque-comando">
+            <span class="tag">Sistema de archivos</span><br>
+            <code>mkdir mi-chef-bot</code><br>
+            Crea una carpeta llamada <em>mi-chef-bot</em> que contendrá todo el proyecto del LLM, incluyendo
+            código, datos y configuraciones.[1]
+        </div>
+
+        <div class="bloque-comando">
+            <span class="tag">Navegación</span><br>
+            <code>cd mi-chef-bot</code><br>
+            Entra en la carpeta recién creada para que todos los comandos siguientes se ejecuten dentro del
+            proyecto.[1]
+        </div>
+
+        <div class="bloque-comando">
+            <span class="tag">Python / venv</span><br>
+            <code>python3 -m venv venv</code><br>
+            Crea un entorno virtual de Python llamado <em>venv</em>, aislando las librerías que se instalarán
+            para este proyecto.[1]
+        </div>
+
+        <div class="bloque-comando">
+            <span class="tag">Activar entorno</span><br>
+            <code>source venv/bin/activate</code><br>
+            Activa el entorno virtual en Linux para que el intérprete y los paquetes usados sean los del
+            proyecto y no los globales del sistema.[1]
+        </div>
+
+        <div class="bloque-comando">
+            <span class="tag">Gestor de paquetes</span><br>
+            <code>pip install --upgrade pip</code><br>
+            Actualiza <em>pip</em> a la última versión para evitar errores y asegurar compatibilidad al instalar
+            las dependencias.[1]
+        </div>
+
+        <div class="bloque-comando">
+            <span class="tag">PyTorch CUDA</span><br>
+            <code>pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121</code><br>
+            Instala PyTorch y sus módulos asociados con la versión específica para CUDA 12.1, permitiendo usar
+            la GPU para entrenar el modelo.[1]
+        </div>
+
+        <div class="bloque-comando">
+            <span class="tag">Transformers</span><br>
+            <code>pip install transformers datasets accelerate</code><br>
+            Instala las librerías clave de HuggingFace: <em>transformers</em> para modelos, <em>datasets</em>
+            para manejar datos y <em>accelerate</em> para optimizar el entrenamiento.[1]
+        </div>
+
+        <div class="bloque-comando">
+            <span class="tag">Axolotl</span><br>
+            <code>git clone https://github.com/OpenAccess-AI-Collective/axolotl</code><br>
+            Clona el repositorio de Axolotl, una herramienta especializada para fine tuning de modelos de
+            lenguaje de forma flexible.[1]
+        </div>
+
+        <div class="bloque-comando">
+            <span class="tag">Instalar Axolotl</span><br>
+            <code>cd axolotl && pip install -e .[flash-attn,deepspeed] && cd ..</code><br>
+            Entra en la carpeta de Axolotl, lo instala en modo editable con soporte para <em>flash-attn</em> y
+            <em>deepspeed</em>, y luego vuelve a la carpeta raíz del proyecto.[1]
+        </div>
+
+        <div class="bloque-comando">
+            <span class="tag">llama.cpp</span><br>
+            <code>git clone https://github.com/ggerganov/llama.cpp</code><br>
+            Clona el repositorio de <em>llama.cpp</em>, que permite ejecutar modelos LLM en CPU o GPU usando
+            formatos ligeros como GGUF.[1]
+        </div>
+
+        <div class="bloque-comando">
+            <span class="tag">Dependencias llama.cpp</span><br>
+            <code>pip install -r llama.cpp/requirements.txt</code><br>
+            Instala las dependencias de Python que necesita llama.cpp para convertir modelos HuggingFace al
+            formato GGUF y trabajar con ellos.[1]
+        </div>
+    </div>
+</section>
+
+<!-- 3. DATATEST -->
+<section id="datatest">
+    <h2>3. Creación de los datos (JSONL)</h2>
+
+    <p>
+        Para entrenar el modelo tipo “chef-bot” se crea un archivo JSON (o JSONL) con pares
+        <strong>instruction / output</strong>, donde se describe la entrada del usuario y la respuesta esperada.[1]
+    </p>
+
+    <pre><code>{
