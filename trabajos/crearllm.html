@@ -1,123 +1,442 @@
-<!-- 1. REQUISITOS -->
-<section id="requisitos">
-    <h2>1. Requisitos iniciales</h2>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creación de un LLM - Daniel Redondo Olmos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    <div class="bloque-comando">
-        <strong>GPU NVIDIA con CUDA 12.1+ y 8GB+ VRAM</strong><br>
-        Necesitas una GPU moderna compatible con CUDA 12.1 o superior y al menos 8 GB de memoria de vídeo
-        para poder entrenar y ajustar el modelo de lenguaje de forma eficiente.
-    </div>
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #e2e8f0;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            overflow-x: hidden;
+        }
 
-    <div class="bloque-comando">
-        <strong>Python 3.11/3.12 en entorno virtual (venv)</strong><br>
-        Se recomienda usar Python 3.11 o 3.12 dentro de un entorno virtual para aislar dependencias y evitar
-        problemas con otras versiones instaladas en el sistema.
-    </div>
+        /* PORTADA */
+        .portada {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
 
-    <div class="bloque-comando">
-        <strong>Git, ~50GB de espacio en disco</strong><br>
-        Git se usa para clonar los repositorios de Axolotl y llama.cpp, y el espacio en disco es necesario
-        para modelos, datos y resultados de entrenamiento.
-    </div>
+        .portada::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%"><stop offset="0%" stop-color="rgba(255,255,255,0.1)"/><stop offset="100%" stop-color="rgba(255,255,255,0)"/></radialGradient></defs><circle cx="200" cy="200" r="100" fill="url(%23a)"><animate attributeName="cx" values="200;800;200" dur="6s" repeatCount="indefinite"/><animate attributeName="cy" values="200;300;200" dur="8s" repeatCount="indefinite"/></circle><circle cx="800" cy="800" r="80" fill="url(%23a)"><animate attributeName="cx" values="800;200;800" dur="10s" repeatCount="indefinite"/><animate attributeName="cy" values="800;700;800" dur="7s" repeatCount="indefinite"/></circle></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
 
-    <div class="bloque-comando">
-        <strong>Comando clave: <code>nvidia-smi</code></strong><br>
-        Este comando muestra si la GPU está detectada, qué drivers están instalados y cuánta memoria tiene
-        disponible, comprobando que el entorno está listo para entrenar.
-    </div>
-</section>
+        .portada-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            padding: 0 2rem;
+        }
 
-<!-- 2. ENTORNO -->
-<section id="entorno">
-    <h2>2. Montar el entorno</h2>
+        .portada h1 {
+            font-size: clamp(2.5rem, 8vw, 6rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            letter-spacing: -0.05em;
+            text-shadow: 0 0 30px rgba(255,255,255,0.3);
+        }
 
-    <div class="grupo-comandos">
-        <div class="bloque-comando">
-            <span class="tag">Sistema de archivos</span><br>
-            <code>mkdir mi-chef-bot</code><br>
-            Crea una carpeta llamada <em>mi-chef-bot</em> que contendrá todo el proyecto del LLM, incluyendo
-            código, datos y configuraciones.[1]
+        .portada .nombre {
+            font-size: clamp(1.5rem, 5vw, 3rem);
+            font-weight: 600;
+            color: rgba(255,255,255,0.95);
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .portada p {
+            font-size: 1.3rem;
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            opacity: 0.9;
+        }
+
+        .btn-indice {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1.2rem 2.5rem;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+
+        .btn-indice:hover {
+            background: white;
+            color: #1a1a2e;
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        /* MAIN */
+        main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 5rem 4rem;
+        }
+
+        .section {
+            margin-bottom: 4rem;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #f8fafc;
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        h2::before {
+            content: '';
+            width: 4px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #cbd5e1;
+            margin: 2rem 0 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* INDICE */
+        .indice {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 2.5rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 4rem;
+        }
+
+        .indice ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .indice li a {
+            display: block;
+            padding: 1rem 1.5rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            color: #e2e8f0;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .indice li a:hover {
+            background: rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.5);
+            transform: translateX(8px);
+        }
+
+        /* BLOQUES DE COMANDOS */
+        .comandos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .bloque-comando {
+            background: rgba(15, 15, 35, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bloque-comando::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+            background-size: 200% 100%;
+            animation: gradient 3s ease infinite;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .bloque-comando:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            border-color: rgba(102, 126, 234, 0.4);
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .comando {
+            background: #0f0f23;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+            font-family: 'Fira Code', monospace;
+            font-size: 1rem;
+            color: #a5b4fc;
+            border-left: 4px solid #667eea;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .explicacion {
+            margin-top: 1rem;
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+
+        /* CODIGO YAML/JSON */
+        pre {
+            background: #0f0f23;
+            padding: 2rem;
+            border-radius: 16px;
+            overflow-x: auto;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin: 1.5rem 0;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        pre::before {
+            content: attr(data-lang);
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            background: rgba(102, 126, 234, 0.2);
+            padding: 0.3rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: #a5b4fc;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            main {
+                padding: 3rem 2rem;
+            }
+            
+            .comandos-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .indice ul {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 4px;
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 4rem 2rem 2rem;
+            color: #64748b;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PORTADA ESPECTACULAR -->
+    <section class="portada">
+        <div class="portada-content">
+            <h1>Creación de un LLM</h1>
+            <div class="nombre">Daniel Redondo Olmos</div>
+            <p>Guía completa paso a paso para crear tu propio modelo de lenguaje especializado en recetas de cocina. Desde los requisitos hasta la inferencia en LM Studio.</p>
+            <a href="#indice" class="btn-indice">
+                <i class="fas fa-list"></i>
+                Ver Índice Completo
+            </a>
         </div>
+    </section>
 
-        <div class="bloque-comando">
-            <span class="tag">Navegación</span><br>
-            <code>cd mi-chef-bot</code><br>
-            Entra en la carpeta recién creada para que todos los comandos siguientes se ejecuten dentro del
-            proyecto.[1]
-        </div>
+    <main>
+        <!-- ÍNDICE -->
+        <section id="indice" class="section indice">
+            <h2><i class="fas fa-sitemap"></i> Índice de Contenidos</h2>
+            <ul>
+                <li><a href="#requisitos"><i class="fas fa-server"></i> 1. Requisitos Iniciales</a></li>
+                <li><a href="#entorno"><i class="fas fa-cogs"></i> 2. Montar el Entorno</a></li>
+                <li><a href="#datos"><i class="fas fa-database"></i> 3. Dataset JSONL</a></li>
+                <li><a href="#config"><i class="fas fa-file-code"></i> 4. Configuración YAML</a></li>
+                <li><a href="#finetuning"><i class="fas fa-rocket"></i> 5. Fine Tuning</a></li>
+                <li><a href="#merge"><i class="fas fa-compress-arrows-alt"></i> 6. Merge LoRA</a></li>
+                <li><a href="#cuantizacion"><i class="fas fa-compress"></i> 7. Cuantización GGUF</a></li>
+                <li><a href="#prueba"><i class="fas fa-play-circle"></i> 8. Prueba en LM Studio</a></li>
+            </ul>
+        </section>
 
-        <div class="bloque-comando">
-            <span class="tag">Python / venv</span><br>
-            <code>python3 -m venv venv</code><br>
-            Crea un entorno virtual de Python llamado <em>venv</em>, aislando las librerías que se instalarán
-            para este proyecto.[1]
-        </div>
+        <!-- 1. REQUISITOS -->
+        <section id="requisitos" class="section">
+            <h2><i class="fas fa-server"></i> 1. Requisitos Iniciales</h2>
+            <div class="comandos-grid">
+                <div class="bloque-comando">
+                    <span class="tag"><i class="fas fa-microchip"></i> Hardware GPU</span>
+                    <div class="comando">GPU NVIDIA con CUDA 12.1+ y 8GB+ VRAM</div>
+                    <div class="explicacion">Hardware esencial para entrenar modelos de lenguaje grandes. La GPU acelera enormemente los cálculos de matrices que son el núcleo del entrenamiento.[file:1]</div>
+                </div>
 
-        <div class="bloque-comando">
-            <span class="tag">Activar entorno</span><br>
-            <code>source venv/bin/activate</code><br>
-            Activa el entorno virtual en Linux para que el intérprete y los paquetes usados sean los del
-            proyecto y no los globales del sistema.[1]
-        </div>
+                <div class="bloque-comando">
+                    <span class="tag"><i class="fab fa-python"></i> Python</span>
+                    <div class="comando">Python 3.11/3.12 en venv</div>
+                    <div class="explicacion">Versión específica recomendada por compatibilidad con PyTorch. El entorno virtual evita conflictos entre proyectos.[file:1]</div>
+                </div>
 
-        <div class="bloque-comando">
-            <span class="tag">Gestor de paquetes</span><br>
-            <code>pip install --upgrade pip</code><br>
-            Actualiza <em>pip</em> a la última versión para evitar errores y asegurar compatibilidad al instalar
-            las dependencias.[1]
-        </div>
+                <div class="bloque-comando">
+                    <span class="tag"><i class="fas fa-database"></i> Almacenamiento</span>
+                    <div class="comando">Git + ~50GB espacio disco</div>
+                    <div class="explicacion">Espacio necesario para repositorios, modelos base (varios GB cada uno) y resultados de entrenamiento.[file:1]</div>
+                </div>
 
-        <div class="bloque-comando">
-            <span class="tag">PyTorch CUDA</span><br>
-            <code>pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121</code><br>
-            Instala PyTorch y sus módulos asociados con la versión específica para CUDA 12.1, permitiendo usar
-            la GPU para entrenar el modelo.[1]
-        </div>
+                <div class="bloque-comando">
+                    <span class="tag"><i class="fas fa-terminal"></i> Verificación GPU</span>
+                    <div class="comando">nvidia-smi</div>
+                    <div class="explicacion">Comando crítico que muestra si CUDA está funcionando y cuánta VRAM tienes disponible antes de empezar.[file:1]</div>
+                </div>
+            </div>
+        </section>
 
-        <div class="bloque-comando">
-            <span class="tag">Transformers</span><br>
-            <code>pip install transformers datasets accelerate</code><br>
-            Instala las librerías clave de HuggingFace: <em>transformers</em> para modelos, <em>datasets</em>
-            para manejar datos y <em>accelerate</em> para optimizar el entrenamiento.[1]
-        </div>
+        <!-- 2. ENTORNO -->
+        <section id="entorno" class="section">
+            <h2><i class="fas fa-cogs"></i> 2. Montar el Entorno</h2>
+            <h3><i class="fas fa-folder-open"></i> Crear estructura proyecto</h3>
+            <div class="comandos-grid">
+                <div class="bloque-comando">
+                    <span class="tag"><i class="fas fa-folder-plus"></i> Proyecto</span>
+                    <div class="comando">mkdir mi-chef-bot</div>
+                    <div class="explicacion">Crea la carpeta raíz del proyecto donde se ubicará todo el código, datos y modelos.[file:1]</div>
+                </div>
+                <div class="bloque-comando">
+                    <span class="tag"><i class="fas fa-arrow-right"></i> Navegar</span>
+                    <div class="comando">cd mi-chef-bot</div>
+                    <div class="explicacion">Entra en el directorio de trabajo del proyecto.[file:1]</div>
+                </div>
+            </div>
 
-        <div class="bloque-comando">
-            <span class="tag">Axolotl</span><br>
-            <code>git clone https://github.com/OpenAccess-AI-Collective/axolotl</code><br>
-            Clona el repositorio de Axolotl, una herramienta especializada para fine tuning de modelos de
-            lenguaje de forma flexible.[1]
-        </div>
+            <h3><i class="fab fa-python"></i> Entorno virtual Python</h3>
+            <div class="comandos-grid">
+                <div class="bloque-comando">
+                    <span class="tag"><i class="fas fa-vial"></i> venv</span>
+                    <div class="comando">python3 -m venv venv</div>
+                    <div class="explicacion">Crea entorno Python aislado con sus propias librerías.[file:1]</div>
+                </div>
+                <div class="bloque-comando">
+                    <span class="tag"><i class="fas fa-toggle-on"></i> Activar</span>
+                    <div class="comando">source venv/bin/activate</div>
+                    <div class="explicacion">Activa el entorno virtual (prompt cambia mostrando (venv)).[file:1]</div>
+                </div>
+            </div>
 
-        <div class="bloque-comando">
-            <span class="tag">Instalar Axolotl</span><br>
-            <code>cd axolotl && pip install -e .[flash-attn,deepspeed] && cd ..</code><br>
-            Entra en la carpeta de Axolotl, lo instala en modo editable con soporte para <em>flash-attn</em> y
-            <em>deepspeed</em>, y luego vuelve a la carpeta raíz del proyecto.[1]
-        </div>
+            <h3><i class="fas fa-download"></i> Dependencias críticas</h3>
+            <div class="comandos-grid">
+                <div class="bloque-comando">
+                    <span class="tag"><i class="fas fa-arrow-up"></i> pip</span>
+                    <div class="comando">pip install --upgrade pip</div>
+                    <div class="explicacion">Actualiza pip para máxima compatibilidad instalando paquetes.[file:1]</div>
+                </div>
+                <div class="bloque-comando">
+                    <span class="tag"><i class="fab fa-pytorch"></i> PyTorch CUDA</span>
+                    <div class="comando">pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121</div>
+                    <div class="explicacion">Framework ML con soporte CUDA 12.1 para usar GPU en entrenamiento.[file:1]</div>
+                </div>
+            </div>
 
-        <div class="bloque-comando">
-            <span class="tag">llama.cpp</span><br>
-            <code>git clone https://github.com/ggerganov/llama.cpp</code><br>
-            Clona el repositorio de <em>llama.cpp</em>, que permite ejecutar modelos LLM en CPU o GPU usando
-            formatos ligeros como GGUF.[1]
-        </div>
-
-        <div class="bloque-comando">
-            <span class="tag">Dependencias llama.cpp</span><br>
-            <code>pip install -r llama.cpp/requirements.txt</code><br>
-            Instala las dependencias de Python que necesita llama.cpp para convertir modelos HuggingFace al
-            formato GGUF y trabajar con ellos.[1]
-        </div>
-    </div>
-</section>
-
-<!-- 3. DATATEST -->
-<section id="datatest">
-    <h2>3. Creación de los datos (JSONL)</h2>
-
-    <p>
-        Para entrenar el modelo tipo “chef-bot” se crea un archivo JSON (o JSONL) con pares
-        <strong>instruction / output</strong>, donde se describe la entrada del usuario y la respuesta esperada.[1]
-    </p>
-
-    <pre><code>{
+            <h3><i class="fas fa-tools"></i> Herramientas especializadas</h3>
+            <div class="comandos-grid">
+                <div class="bloque-comando">
+                    <span class="tag"><i class="fas fa-brain"></i> Transformers</span>
+                    <div class="comando">pip install transformers datasets accelerate</div>
+                    <div class="explicacion">Librerías HuggingFace: modelos, datasets y optimización entrenamiento.[file:1]</div>
+                </div>
+                <div class="bloque-comando">
+                    <span class="tag"><i class="fab fa-github"></i> Axolotl</span>
+                    <div class="comando">git clone https://github.com/OpenAccess-AI-Collective/axolotl<br>cd
