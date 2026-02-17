@@ -18,7 +18,6 @@
             line-height: 1.6;
             color: #e2e8f0;
             background: linear-gradient(135deg, #0a0a1e 0%, #1a1a2e 50%, #16213e 100%);
-            overflow-x: hidden;
         }
 
         /* PORTADA */
@@ -29,19 +28,12 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            position: relative;
             background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 50%, #45b7d1 100%);
-        }
-
-        .portada-content {
-            position: relative;
-            z-index: 2;
-            max-width: 900px;
-            padding: 0 2rem;
+            color: white;
         }
 
         .portada h1 {
-            font-size: clamp(3rem, 10vw, 7rem);
+            font-size: clamp(3.5rem, 12vw, 8rem);
             font-weight: 800;
             background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
             -webkit-background-clip: text;
@@ -50,7 +42,7 @@
         }
 
         .portada .nombre {
-            font-size: clamp(1.8rem, 6vw, 4rem);
+            font-size: clamp(2rem, 7vw, 4.5rem);
             font-weight: 700;
             background: linear-gradient(135deg, #ffd23f, #ff8e53);
             -webkit-background-clip: text;
@@ -62,7 +54,7 @@
             display: inline-flex;
             align-items: center;
             gap: 1rem;
-            padding: 1.4rem 3rem;
+            padding: 1.5rem 3rem;
             background: rgba(255,255,255,0.2);
             backdrop-filter: blur(25px);
             border: 2px solid rgba(255,255,255,0.4);
@@ -77,273 +69,340 @@
         .btn-indice:hover {
             background: white;
             color: #1a1a2e;
-            transform: translateY(-6px);
+            transform: translateY(-5px);
         }
 
         /* MAIN */
         main {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
-            padding: 4rem 2rem;
-        }
-
-        .section {
-            margin-bottom: 4rem;
+            padding: 5rem 2rem 3rem;
         }
 
         h2 {
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: 800;
             color: #f8fafc;
-            margin-bottom: 2rem;
+            margin: 4rem 0 3rem;
             display: flex;
             align-items: center;
             gap: 1rem;
         }
 
-        /* GALERÍA MEJORADA */
+        /* GALERÍA 8 FOTOS - VISIÓN COMPLETA */
         .galeria {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 2rem;
-            margin: 2rem 0;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 3rem;
+            margin: 3rem 0;
         }
 
         .foto-container {
-            background: rgba(15,15,35,0.9);
-            border-radius: 20px;
+            background: rgba(15,15,35,0.95);
+            border-radius: 25px;
             overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.4s;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.15);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
         }
 
         .foto-container:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            transform: translateY(-15px);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.6);
         }
 
+        /* IMAGEN COMPLETA - MÁS LEJOS */
         .foto-img {
             width: 100%;
-            height: 250px;
-            object-fit: cover;
+            height: 350px; /* Aumentado para visión completa */
+            object-fit: contain; /* Mantiene proporciones COMPLETAS */
+            background: #1a1a2e;
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+
+        .foto-container:hover .foto-img {
+            transform: scale(1.02);
         }
 
         .foto-info {
-            padding: 1.5rem;
+            padding: 2rem;
         }
 
         .foto-numero {
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             font-weight: 700;
             color: #4ecdc4;
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .foto-titulo {
-            font-size: 1.4rem;
-            font-weight: 600;
+            font-size: 1.6rem;
+            font-weight: 700;
             color: #f8fafc;
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
         }
 
         .foto-descripcion {
             color: #cbd5e1;
-            line-height: 1.7;
+            line-height: 1.8;
+            font-size: 1.1rem;
         }
 
         .comando {
-            background: #1e1e3f;
-            padding: 1rem;
-            border-radius: 10px;
-            margin: 1rem 0;
-            font-family: monospace;
+            background: linear-gradient(135deg, #1e1e3f, #2a1e5c);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            font-family: 'Fira Code', monospace;
             color: #a5b4fc;
-            border-left: 4px solid #ff6b6b;
+            border-left: 5px solid #ff6b6b;
+            font-size: 1rem;
         }
 
+        /* RESPONSIVE */
         @media (max-width: 768px) {
             .galeria {
                 grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            .foto-img {
+                height: 300px;
             }
             main {
-                padding: 2rem 1rem;
+                padding: 3rem 1.5rem;
             }
+        }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
 
-    <!-- PORTADA -->
+    <!-- PORTADA ESPECTACULAR -->
     <section class="portada">
-        <div class="portada-content">
+        <div style="position: relative; z-index: 2; max-width: 1000px; padding: 0 2rem;">
             <h1>Cuantización</h1>
             <div class="nombre">Daniel Redondo Olmos</div>
-            <p>Análisis completo de las 8 capturas del proceso de cuantización con Ollama y LM Studio</p>
-            <a href="#fotos" class="btn-indice">
-                <i class="fas fa-images"></i> Ver Todas las Fotos
+            <p style="font-size: 1.5rem; max-width: 700px; margin: 0 auto 4rem;">
+                Análisis completo de las 8 capturas del proceso Ollama + llama.cpp + Q4_K_M
+            </p>
+            <a href="#galeria" class="btn-indice">
+                <i class="fas fa-images"></i>
+                Ver las 8 Fotos Completas
             </a>
         </div>
     </section>
 
     <main>
-        <!-- SECCIÓN FOTOS -->
-        <section id="fotos" class="section">
-            <h2><i class="fas fa-images"></i> Análisis de Capturas</h2>
+        <!-- GALERÍA DE LAS 8 FOTOS -->
+        <section id="galeria">
+            <h2><i class="fas fa-images"></i> Las 8 Capturas del Proceso</h2>
             
             <div class="galeria">
-                <!-- FOTO 1: Descarga Ollama -->
+                <!-- FOTO 1 -->
                 <div class="foto-container">
-                    [image:5]
+                    <img src="foto1_cuantizacion.jpg" alt="Foto 1" class="foto-img">
                     <div class="foto-info">
-                        <div class="foto-numero">Foto 1</div>
-                        <div class="foto-titulo"><i class="fas fa-download"></i> Descarga Ollama macOS</div>
+                        <div class="foto-numero"><i class="fas fa-download"></i> Foto 1</div>
+                        <div class="foto-titulo">Descarga Ollama macOS</div>
                         <div class="foto-descripcion">
-                            Página oficial de GitHub para descargar Ollama en macOS. Plataforma esencial para ejecutar LLMs localmente.<br>
-                            <strong>Versión mínima:</strong> macOS 12 o superior[file:3]
+                            Página oficial GitHub de Ollama para macOS. Plataforma clave para ejecutar LLMs localmente sin conexión a internet.
+                            <br><strong>Requisito:</strong> macOS 12+ • Botón "Download macOS"
                         </div>
                     </div>
                 </div>
 
-                <!-- FOTO 2: ollama --version -->
+                <!-- FOTO 2 -->
                 <div class="foto-container">
-                    [image:9]
+                    <img src="foto2_cuantizacion.jpg" alt="Foto 2" class="foto-img">
                     <div class="foto-info">
-                        <div class="foto-numero">Foto 2</div>
-                        <div class="foto-titulo"><i class="fas fa-terminal"></i> Verificación Ollama</div>
+                        <div class="foto-numero"><i class="fas fa-terminal"></i> Foto 2</div>
+                        <div class="foto-titulo">Verificación Ollama v0.14.1</div>
                         <div class="foto-descripcion">
                             <div class="comando">ollama --version<br>ollama version is 0.14.1</div>
-                            Instalación exitosa confirmada. Ollama v0.14.1 lista para descargar modelos[file:3]
+                            Confirmación exitosa de instalación. Terminal lista para descargar modelos de IA.
                         </div>
                     </div>
                 </div>
 
-                <!-- FOTO 3: Pull Llama3 y Gemma -->
+                <!-- FOTO 3 -->
                 <div class="foto-container">
-                    [image:8]
+                    <img src="foto3_cuantizacion.jpg" alt="Foto 3" class="foto-img">
                     <div class="foto-info">
-                        <div class="foto-numero">Foto 3</div>
-                        <div class="foto-titulo"><i class="fas fa-cloud-download-alt"></i> Descarga Modelos</div>
+                        <div class="foto-numero"><i class="fas fa-cloud-download-alt"></i> Foto 3</div>
+                        <div class="foto-titulo">Descarga Llama3 + Gemma</div>
                         <div class="foto-descripcion">
-                            Proceso de descarga de Llama3 (4.7GB) y Gemma (5GB). Progreso: 100% completado con verificación de manifiestos.<br>
-                            <strong>Tamaños:</strong> Llama3: 4.7GB | Gemma: 5GB[file:3]
+                            Proceso de descarga completado:<br>
+                            • <strong>Llama3:</strong> 4.7GB (100%)<br>
+                            • <strong>Gemma:</strong> 5GB (100%)<br>
+                            Verificación de manifiestos OK ✓
                         </div>
                     </div>
                 </div>
 
-                <!-- FOTO 4: Chat Llama3 -->
+                <!-- FOTO 4 -->
                 <div class="foto-container">
-                    [image:4]
+                    <img src="foto4_cuantizacion.jpg" alt="Foto 4" class="foto-img">
                     <div class="foto-info">
-                        <div class="foto-numero">Foto 4</div>
-                        <div class="foto-titulo"><i class="fas fa-comments"></i> Chat Interactivo</div>
+                        <div class="foto-numero"><i class="fas fa-comments"></i> Foto 4</div>
+                        <div class="foto-titulo">Chat Interactivo Llama3</div>
                         <div class="foto-descripcion">
                             <div class="comando">ollama run llama3<br>>>> Hola, ¿quién eres?</div>
-                            Respuesta coherente en español del modelo Llama3 sin cuantización. Funciona perfectamente[file:3]
+                            Respuesta coherente en español del modelo sin cuantización. ¡Funciona perfecto!
                         </div>
                     </div>
                 </div>
 
-                <!-- FOTO 5: Código Python -->
+                <!-- FOTO 5 -->
                 <div class="foto-container">
-                    [image:6]
+                    <img src="foto5_cuantizacion.jpg" alt="Foto 5" class="foto-img">
                     <div class="foto-info">
-                        <div class="foto-numero">Foto 5</div>
-                        <div class="foto-titulo"><i class="fab fa-python"></i> Script Tokenización</div>
+                        <div class="foto-numero"><i class="fab fa-python"></i> Foto 5</div>
+                        <div class="foto-titulo">Script Python Tokenización</div>
                         <div class="foto-descripcion">
-                            Código Python cargando Gemma desde HuggingFace para análisis de tokens. Preparación para cuantización:<br>
-                            <code>from transformers import AutoTokenizer, AutoModelForCausalLM</code>[file:3]
+                            Código Python cargando Gemma-2B para análisis:<br>
+                            <code>AutoTokenizer.from_pretrained("google/gemma-2b")<br>AutoModelForCausalLM</code>
+                            Preparación para proceso de cuantización.
                         </div>
                     </div>
                 </div>
 
-                <!-- FOTO 6: Comparativa GPUs -->
+                <!-- FOTO 6 -->
                 <div class="foto-container">
-                    [image:7]
+                    <img src="foto6_cuantizacion.jpg" alt="Foto 6" class="foto-img">
                     <div class="foto-info">
-                        <div class="foto-numero">Foto 6</div>
-                        <div class="foto-titulo"><i class="fas fa-chart-bar"></i> Comparativa GDDR6</div>
+                        <div class="foto-numero"><i class="fas fa-chart-bar"></i> Foto 6</div>
+                        <div class="foto-titulo">Comparativa GPUs GDDR6</div>
                         <div class="foto-descripcion">
-                            Análisis comparativo de GPUs con memoria GDDR6 para modelos sin cuantización.<br>
-                            <strong>RTX 4090, 3080 Ti, 3090, 7900 XTX</strong> - Rendimiento en -ngl 99[file:3]
+                            Análisis rendimiento GPUs sin cuantización:<br>
+                            <strong>RTX 4090/3080 Ti/3090/7900 XTX</strong><br>
+                            Memoria GDDR6X vs GDDR6 • Rendimiento en -ngl 99
                         </div>
                     </div>
                 </div>
 
-                <!-- FOTO 7: GPU Performance -->
+                <!-- FOTO 7 -->
                 <div class="foto-container">
-                    [image:10]
+                    <img src="foto7_cuantizacion.jpg" alt="Foto 7" class="foto-img">
                     <div class="foto-info">
-                        <div class="foto-numero">Foto 7</div>
-                        <div class="foto-titulo"><i class="fas fa-microchip"></i> GPU Performance</div>
+                        <div class="foto-numero"><i class="fas fa-microchip"></i> Foto 7</div>
+                        <div class="foto-titulo">GPU Performance Chart</div>
                         <div class="foto-descripcion">
-                            Gráfico detallado de rendimiento GPUs sin cuantización:<br>
-                            • RTX 4090: Máximo rendimiento<br>
-                            • RTX 3080 Ti: Excelente equilibrio<br>
-                            • RTX 7900 XTX: Precio/rendimiento óptimo[file:3]
+                            Gráfico detallado rendimiento:<br>
+                            • <strong>RTX 4090:</strong> Máximo FPS/tokens<br>
+                            • <strong>RTX 3080 Ti:</strong> Equilibrio óptimo<br>
+                            • <strong>RTX 7900 XTX:</strong> Mejor precio/rendimiento
                         </div>
                     </div>
                 </div>
 
-                <!-- FOTO 8: llama.cpp Cuantización -->
+                <!-- FOTO 8 -->
                 <div class="foto-container">
-                    [image:11]
+                    <img src="foto8_cuantizacion.jpg" alt="Foto 8" class="foto-img">
                     <div class="foto-info">
-                        <div class="foto-numero">Foto 8</div>
-                        <div class="foto-titulo"><i class="fas fa-compress-arrows-alt"></i> Proceso Cuantización</div>
+                        <div class="foto-numero"><i class="fas fa-compress-arrows-alt"></i> Foto 8</div>
+                        <div class="foto-titulo">llama.cpp Cuantización Q4_K_M</div>
                         <div class="foto-descripcion">
-                            Terminal ejecutando llama.cpp para cuantizar modelo:<br>
                             <div class="comando">llama-quantize ... q4_k_m<br>main: quantizing time: 468.65s</div>
-                            Proceso completo Q4_K_M exitoso. Metal GPU activada[file:3]
+                            <strong>PROCESO COMPLETO:</strong> Metal GPU macOS • Q4_K_M exitoso ✓
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- RESUMEN -->
-        <section class="section">
-            <h2><i class="fas fa-list-check"></i> Resumen del Proceso</h2>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem;">
-                <div style="background: rgba(255,107,107,0.2); padding: 2rem; border-radius: 15px; border: 1px solid rgba(255,107,107,0.3);">
-                    <h3 style="color: #ff6b6b; margin-bottom: 1rem;"><i class="fas fa-times"></i> SIN Cuantización</h3>
-                    <ul style="color: #cbd5e1;">
-                        <li>Modelos completos: 4-8GB RAM</li>
-                        <li>RTX 4090/3090 recomendada</li>
-                        <li>Precisión máxima</li>
-                        <li>Lento en PCs normales</li>
+        <!-- COMPARATIVA FINAL -->
+        <section style="background: rgba(255,255,255,0.05); padding: 4rem; border-radius: 30px; margin: 5rem 0; backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1);">
+            <h2 style="text-align: center; margin-bottom: 3rem;"><i class="fas fa-balance-scale"></i> SIN vs CON Cuantización</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 3rem;">
+                <div style="background: rgba(255,107,107,0.15); padding: 3rem; border-radius: 25px; border: 2px solid rgba(255,107,107,0.3);">
+                    <h3 style="color: #ff6b6b; font-size: 1.8rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+                        <i class="fas fa-times-circle"></i> SIN Cuantización
+                    </h3>
+                    <ul style="color: #e2e8f0; font-size: 1.2rem;">
+                        <li>📏 4-8GB RAM/VRAM</li>
+                        <li>⚡ RTX 4090/3090 necesaria</li>
+                        <li>⭐ Precisión 100%</li>
+                        <li>🐌 Lento en PC normal</li>
                     </ul>
                 </div>
-                <div style="background: rgba(78,205,196,0.2); padding: 2rem; border-radius: 15px; border: 1px solid rgba(78,205,196,0.3);">
-                    <h3 style="color: #4ecdc4; margin-bottom: 1rem;"><i class="fas fa-check"></i> CON Cuantización Q4_K_M</h3>
-                    <ul style="color: #cbd5e1;">
-                        <li>~1-2GB RAM (75% menos)</li>
-                        <li>Funciona en Mac/PC normal</li>
-                        <li>3x más velocidad</li>
-                        <li>95-98% calidad preservada</li>
+                <div style="background: rgba(78,205,196,0.15); padding: 3rem; border-radius: 25px; border: 2px solid rgba(78,205,196,0.3);">
+                    <h3 style="color: #4ecdc4; font-size: 1.8rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+                        <i class="fas fa-check-circle"></i> CON Q4_K_M
+                    </h3>
+                    <ul style="color: #e2e8f0; font-size: 1.2rem;">
+                        <li>📏 1-2GB RAM (75% menos)</li>
+                        <li>⚡ Mac/PC normal OK</li>
+                        <li>⭐ 95-98% calidad</li>
+                        <li>🚀 3x más rápido</li>
                     </ul>
                 </div>
             </div>
         </section>
     </main>
 
-    <footer style="text-align: center; padding: 4rem 2rem; color: #64748b; border-top: 1px solid rgba(255,255,255,0.1);">
-        <div style="font-weight: 600; margin-bottom: 1rem;">
-            <i class="fas fa-compress-arrows-alt" style="color: #4ecdc4;"></i>
-            Cuantización Completa • Daniel Redondo Olmos • 2026
+    <footer style="
+        text-align: center; 
+        padding: 5rem 2rem 3rem; 
+        color: #64748b; 
+        border-top: 1px solid rgba(255,255,255,0.1);
+        font-size: 1.1rem;
+    ">
+        <div style="font-weight: 700; margin-bottom: 1rem; font-size: 1.3rem;">
+            <i class="fas fa-crown" style="color: #ffd23f; margin-right: 1rem;"></i>
+            Daniel Redondo Olmos • 2026
         </div>
-        <div>8 capturas analizadas • Ollama 0.14.1 • Q4_K_M • llama.cpp</div>
+        <div>
+            <i class="fas fa-images" style="color: #4ecdc4;"></i>
+            8 capturas analizadas • Ollama 0.14.1 • llama.cpp • Q4_K_M
+        </div>
     </footer>
 
     <script>
+        // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
                 document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
+                    behavior: 'smooth',
+                    block: 'start'
                 });
             });
         });
+
+        // Hover animations
+        document.querySelectorAll('.foto-container').forEach((el, index) => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(50px)';
+            el.style.transition = `all 0.6s ${index * 0.1}s cubic-bezier(0.4, 0, 0.2, 1)`;
+        });
+
+        // Intersection Observer
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        });
+
+        document.querySelectorAll('.foto-container').forEach(el => observer.observe(el));
     </script>
 </body>
 </html>
+
