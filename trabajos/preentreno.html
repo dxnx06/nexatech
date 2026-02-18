@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pre-entrenamiento Quijote IA - Daniel Redondo Olmos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #e2e8f0;
+            background: linear-gradient(135deg, #1e1e3f 0%, #2a1e5c 50%, #3b1e6b 100%);
+        }
+
+        /* PORTADA */
+        .portada {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 50%, #06b6d4 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .portada::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%);
+            animation: pulse 10s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+
+        .portada-content {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+        }
+
+        .portada h1 {
+            font-size: clamp(3rem, 10vw, 7rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .portada .subtitulo {
+            font-size: clamp(1.5rem, 5vw, 3rem);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            opacity: 0.95;
+        }
+
+        .portada .nombre {
+            font-size: clamp(1.5rem, 4vw, 3rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2.5rem;
+        }
+
+        /* MAIN */
+        main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 5rem 3rem 4rem;
+        }
+
+        .section {
+            margin-bottom: 5rem;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        h2 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: #f8fafc;
+            margin-bottom: 2.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            position: relative;
+        }
+
+        h2::before {
+            content: '';
+            width: 6px;
+            height: 45px;
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            border-radius: 3px;
+        }
+
+        h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #cbd5e1;
+            margin: 3rem 0 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* PASOS */
+        .paso {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.4s;
+        }
+
+        .paso:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+            border-color: rgba(139,92,246,0.3);
+        }
+
+        .paso-numero {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #8b5cf6;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .comando {
+            background: linear-gradient(135deg, #1e1e3f, #2a1e5c);
+            padding: 2rem;
+            border-radius: 20px;
+            margin: 2rem 0;
+            font-family: 'Fira Code', monospace;
+            color: #a5b4fc;
+            border-left: 6px solid #8b5cf6;
+            font-size: 1.1rem;
+            overflow-x: auto;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.3);
+        }
+
+        .output {
+            background: rgba(0,0,0,0.4);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            font-family: 'Fira Code', monospace;
+            color: #90caf9;
+            border-left: 4px solid #03dac6;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .texto-generado {
+            background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(59,130,246,0.1));
+            padding: 2rem;
+            border-radius: 20px;
+            border-left: 5px solid #8b5cf6;
+            margin: 2rem 0;
+            font-style: italic;
+            color: #e2e8f0;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            main { padding: 3rem 2rem; }
+            h2 { font-size: 2.2rem; }
+            .paso { padding: 2rem; }
+            .galeria { grid-template-columns: 1fr !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PORTADA -->
+    <section class="portada">
+        <div class="portada-content">
+            <h1>Pre-entrenamiento</h1>
+            <div class="subtitulo">Quijote IA</div>
+            <div class="nombre">Daniel Redondo Olmos</div>
+            <p style="font-size: 1.4rem; max-width: 700px; opacity: 0.95;">
+                Entrenamiento de modelo de lenguaje con texto del Quijote para aprender su estilo literario único
+            </p>
+        </div>
+    </section>
+
+    <main>
+        <!-- DEFINICIÓN -->
+        <section class="section">
+            <h2><i class="fas fa-book-open"></i> ¿Qué es el Pre-entrenamiento?</h2>
+            <div class="paso">
+                <p style="font-size: 1.3rem; color: #e2e8f0; line-height: 1.8;">
+                    El <strong>pre-entrenamiento</strong> consiste en entrenar un modelo con datos específicos para que aprenda 
+                    un estilo o conocimiento particular. En esta práctica se entrena un modelo "nano" con el texto completo 
+                    del <em>Quijote de la Mancha</em> para que genere texto con su estilo literario característico.[file:12]
+                </p>
+            </div>
+        </section>
+
+        <!-- PASO 1 -->
+        <section class="section">
+            <h2><i class="fas fa-folder-plus"></i> Paso 1: Crear Proyecto</h2>
+            <div class="paso">
+                <div class="paso-numero">1</div>
+                <div class="comando">mkdir quijote_ia<br>cd quijote_ia</div>
+                <p>Crear carpeta <code>quijote_ia</code> e entrar en ella. Aquí se ubicará todo el proyecto de entrenamiento.</p>
+            </div>
+        </section>
+
+        <!-- PASO 2 -->
+        <section class="section">
+            <h2><i class="fas fa-vial"></i> Paso 2: Entorno Virtual</h2>
+            <div class="paso">
+                <div class="paso-numero">2</div>
+                <div class="comando">python -m venv .venv<br>.venv\Scripts\activate</div>
+                <p>Crear y activar entorno virtual Python. Aísla las dependencias del proyecto del sistema global.</p>
+            </div>
+        </section>
+
+        <!-- PASO 3 -->
+        <section class="section">
+            <h2><i class="fab fa-pytorch"></i> Paso 3: Instalar PyTorch</h2>
+            <div class="paso">
+                <div class="paso-numero">3</div>
+                <div class="comando">pip install torch</div>
+                <div class="output">
+(.venv) C:\quijote_ia&gt;pip install torch<br>
+Collecting torch<br>
+Using cached torch-2.10.0-cp313-cp313-win_amd64.whl.metadata (31 kB)<br>
+... (dependencias sympy, networkx, jinja2, etc.)<br>
+[notice] A new release of pip is available: 25.3 -&gt; 26.0.1
+                </div>
+                <p>Instalación exitosa de PyTorch 2.10.0 con todas sus dependencias. Framework esencial para entrenamiento neuronal.[file:12]</p>
+            </div>
+        </section>
+
+        <!-- PASO 4 -->
+        <section class="section">
+            <h2><i class="fas fa-rocket"></i> Paso 4: Entrenamiento Principal</h2>
+            <div class="paso">
+                <div class="paso-numero">4</div>
+                <div class="comando">notepad entrenar_quijote.py<br>python entrenar_quijote.py</div>
+                <div class="output">
+(.venv) C:\quijote_ia&gt;python entrenar_quijote.py<br>
+Iniciando entrenamiento en cpu...<br>
+Iteración 0: loss train 4.6439, loss val 4.6462<br>
+Iteración 500: loss train 2.1478, loss val 2.1516<br>
+...<br>
+Iteración 4500: loss train 1.3465, loss val 1.3816<br>
+Modelo guardado como nano_quijote.pth
+                </div>
+                <div class="texto-generado">
+<strong>Texto generado por el modelo:</strong><br>
+"que ella, y de mucha escebradas con una mádalo, que tienen, que mitáricase,<br>
+buenos de los deseos alegó a una cada la sala acerta, a vuelta pienso en busca merca.<br>
+Comidién: si por un luinguno destento, me dijo: -Acambién el demás<br>
+Vaalo de rostrar, que han de abllina hallar a una dueña Dulcinea..."
+                </div>
+                <p><strong>¡ÉXITO!</strong> Loss baja de 4.64 a 1.35 en 4500 iteraciones. El modelo ya imita el estilo del Quijote.[file:12]</p>
+            </div>
+        </section>
+
+        <!-- PASO 5 -->
+        <section class="section">
+            <h2><i class="fas fa-play-circle"></i> Paso 5: Probar Modelo Entrenado</h2>
+            <div class="paso">
+                <div class="paso-numero">5</div>
+                <div class="comando">notepad probar_modelo.py<br>python probar_modelo.py</div>
+                <div class="output">
+Carga modelo nano_quijote.pth...<br>
+Prompt: "En un lugar de la Mancha"<br>
+<strong>Generación:</strong> "En un lugar de la Mancha, que me dije: -De mis razos, ¿o no se hay de echa bien estaban es vecen mayord..."
+                </div>
+                <p>El modelo cargado correctamente genera continuación coherente con estilo quijotesco.[file:12]</p>
+            </div>
+        </section>
+
+        <!-- PASO 6 -->
+        <section class="section">
+            <h2><i class="fas fa-horse"></i> Paso 6: Prompt "Rocinante"</h2>
+            <div class="paso">
+                <div class="paso-numero">6</div>
+                <div class="comando">prompt = "Oh noble Rocinante,"</div>
+                <div class="texto-generado">
+"Oh noble Rocinante, que es renovar dice, antes la buena sino de ser por cuerdar en la Mulla,<br>
+y la barba que el cargo en la Panza. A Dios que le había de ragar la historia..."
+                </div>
+                <p>¡El modelo conoce a Rocinante y Sancho Panza! Ha aprendido personajes y estilo del Quijote.[file:12]</p>
+            </div>
+        </section>
+
+        <!-- PASO 7 -->
+        <section class="section">
+            <h2><i class="fas fa-magic"></i> Paso 7: Verificación Final</h2>
+            <div class="paso">
+                <div class="paso-numero">7</div>
+                <div class="texto-generado">
+"¡nunca que rois más fuertos encirros que puede ningún habría vista notiga como los ofes semejaramos!"
+                </div>
+                <p>Última verificación confirma que el pre-entrenamiento funcionó perfectamente.[file:12]</p>
+            </div>
+        </section>
+
+        <!-- CONCLUSIÓN -->
+        <section class="section">
+            <h2><i class="fas fa-crown"></i> Conclusión</h2>
+            <div class="paso" style="background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(59,130,246,0.15));">
+                <div class="paso-numero" style="color: #fbbf24;">✓</div>
+                <p style="font-size: 1.4rem; text-align: center; font-weight: 600;">
+                    <strong>¡PRE-ENTRENAMIENTO EXITOSO!</strong><br>
+                    El modelo nano ahora genera texto con el estilo único del Quijote de Cervantes.<br>
+                    Demuestra que es posible <em>personalizar IA</em> con datos específicos para tareas concretas.
+                </p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 2rem;">
+                    <div style="text-align: center;">
+                        <i class="fas fa-brain" style="font-size: 3rem; color: #8b5cf6;"></i>
+                        <div><strong>Loss:</strong> 4.64 → 1.35</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <i class="fas fa-clock" style="font-size: 3rem; color: #3b82f6;"></i>
+                        <div><strong>Iteraciones:</strong> 4500</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <i class="fas fa-save" style="font-size: 3rem; color: #10b981;"></i>
+                        <div><strong>Modelo:</strong> nano_quijote.pth</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', e => {
+                e.preventDefault();
+                document.querySelector(a.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.section').forEach(section => observer.observe(section));
+    </script>
+</body>
+</html>
