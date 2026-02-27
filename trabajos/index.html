@@ -2,359 +2,52 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trabajos AFH ---- Daniel Redondo Olmos</title>
+    <title>Índice del repositorio</title>
     <style>
-        :root {
-            --color-primary: #2563eb;
-            --color-primary-hover: #1d4ed8;
-            --color-background: #f8fafc;
-            --color-surface: #ffffff;
-            --color-text: #1e293b;
-            --color-text-secondary: #64748b;
-            --color-border: #e2e8f0;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background-color: var(--color-background);
-            color: var(--color-text);
-            line-height: 1.6;
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background-color: #f5f5f5;
         }
-
-        header {
-            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
-            color: white;
-            padding: 2.5rem 2rem;
+        h1 {
             text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-
-        header h1 {
-            font-size: 2.2rem;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
+        ul {
+            list-style: none;
+            padding: 0;
+            max-width: 400px;
+            margin: 20px auto;
         }
-
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
+        li {
+            background: #fff;
+            margin-bottom: 8px;
+            padding: 10px 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
         }
-
-        .trabajos-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .trabajo-card {
-            background: var(--color-surface);
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            transition: all 0.3s ease;
-            border: 1px solid var(--color-border);
-        }
-
-        .trabajo-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.12);
-        }
-
-        .trabajo-card h3 {
-            color: var(--color-primary);
-            margin-bottom: 1rem;
-            font-size: 1.4rem;
-            font-weight: 600;
-        }
-
-        .trabajo-card p {
-            color: var(--color-text-secondary);
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
-        }
-
-        .trabajo-info {
-            display: flex;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        .info-badge {
-            background: #f1f5f9;
-            padding: 0.4rem 0.8rem;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            color: var(--color-text-secondary);
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 0.75rem;
-        }
-
-        .btn {
-            flex: 1;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            background: var(--color-primary);
-            color: white;
-            padding: 0.75rem 1.25rem;
-            border-radius: 8px;
+        a {
             text-decoration: none;
-            transition: all 0.3s;
-            font-weight: 500;
-            border: none;
-            cursor: pointer;
-            font-size: 0.95rem;
+            color: #007bff;
         }
-
-        .btn:hover {
-            background: var(--color-primary-hover);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--color-primary);
-            border: 2px solid var(--color-primary);
-        }
-
-        .btn-secondary:hover {
-            background: var(--color-primary);
-            color: white;
-        }
-
-        footer {
-            text-align: center;
-            padding: 2rem;
-            margin-top: 4rem;
-            color: var(--color-text-secondary);
-            border-top: 1px solid var(--color-border);
-        }
-
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 1.8rem;
-            }
-
-            .trabajos-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-
-            .btn-group {
-                flex-direction: column;
-            }
+        a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>📚 Trabajos AFH Daniel Redondo Olmos</h1>
-        <p>Portafolio de trabajos realizados</p>
-    </header>
-
-    <div class="container">
-        <div class="trabajos-grid">
-            <!-- Trabajo 1 - PDF -->
-            <div class="trabajo-card">
-                <h3>Montaje y Desmontaje de un Ordenador</h3>
-                <p>Guía completa sobre el proceso de montaje y desmontaje de un ordenador, incluyendo componentes y procedimientos.</p>
-                <div class="trabajo-info">
-                    <span class="info-badge">📄 PDF</span>
-                    <span class="info-badge">📅 Octubre 2025</span>
-                </div>
-                <div class="btn-group">
-                    <a href="Montaje-y-desmontaje-de-un-ordenador-AFH_compressed.pdf" target="_blank" class="btn">
-                        👁️ Ver PDF
-                    </a>
-                  
-                </div>
-            </div>
-
-            <!-- Trabajo 2 - PDF -->
-            <div class="trabajo-card">
-                <h3>Montaje y Desmontaje de un Servidor</h3>
-                <p>Documentación detallada sobre el montaje y desmontaje de servidores y configuración de hardware.</p>
-                <div class="trabajo-info">
-                    <span class="info-badge">📄 PDF</span>
-                    <span class="info-badge">📅 Octubre 2025</span>
-                </div>
-                <div class="btn-group">
-                    <a href="Montaje y desmontaje de un servidor (2)_compressed.pdf" target="_blank" class="btn">
-                        👁️ Ver PDF
-                    </a>
-                  
-                </div>
-            </div>
-
-            <!-- Trabajo 3 - PDF -->
-            <div class="trabajo-card">
-                <h3>Servidor de IA</h3>
-                <p>Proyecto sobre implementación y configuración de un servidor dedicado para aplicaciones de Inteligencia Artificial.</p>
-                <div class="trabajo-info">
-                    <span class="info-badge">📄 PDF</span>
-                    <span class="info-badge">📅 Octubre 2025</span>
-                </div>
-                <div class="btn-group">
-                    <a href="ServidordeIacomprimido.pdf.pdf" target="_blank" class="btn">
-                        👁️ Ver PDF
-                    </a>
-                  
-                </div>
-            </div>
-
-            <!-- Trabajo 4 - HTML -->
-            <div class="trabajo-card">
-                <h3>Acceso Remoto</h3>
-                <p>Descripción del cuarto trabajo. Página HTML con contenido sobre el acceso remoto para AFH.</p>
-                <div class="trabajo-info">
-                    <span class="info-badge">🌐 HTML</span>
-                    <span class="info-badge">📅 Noviembre 2025</span>
-                </div>
-                <div class="btn-group">
-                    <a href="accesoremoto.html" class="btn">
-                        👁️ Ver Trabajo
-                    </a>
-                </div>
-            </div>
-
-            <!-- Trabajo 5 - HTML -->
-            <div class="trabajo-card">
-                <h3>Comparativa de Modelos</h3>
-                <p>Descripción del quinto trabajo. Página HTML con contenido personalizado.</p>
-                <div class="trabajo-info">
-                    <span class="info-badge">🌐 HTML</span>
-                    <span class="info-badge">📅 Proximamente </span>
-                </div>
-                <div class="btn-group">
-                    <a href="ComparativadeIAs.html" class="btn">
-                        👁️ Ver Trabajo
-                    </a>
-                </div>
-            </div>
-
-            <!-- Trabajo 6 - HTML -->
-            <div class="trabajo-card">
-                <h3>Agente</h3>
-                <p>Descripción del sexto trabajo. Página HTML con contenido personalizado.</p>
-                <div class="trabajo-info">
-                    <span class="info-badge">🌐 HTML</span>
-                    <span class="info-badge">📅 Próximamente</span>
-                </div>
-                <div class="btn-group">
-                    <a href="agente.html" class="btn">
-                        👁️ Ver Trabajo
-                    </a>
-                </div>
-                
-            </div>
-
-            <!-- Trabajo 7 - NUEVO ESPACIO -->
-            <div class="trabajo-card">
-                <h3>crear llm</h3>
-                <p>Descripción del séptimo trabajo. Aquí puedes poner tu nuevo proyecto.</p>
-                <div class="trabajo-info">
-                    <span class="info-badge">🌐 HTML</span>
-                    <span class="info-badge">📅 Próximamente</span>
-                </div>
-                <div class="btn-group">
-                    <a href="crearllm.html" class="btn">
-                        👁️ Ver Trabajo
-                    </a>
-                </div>
-            </div>
-
-            <!-- Trabajo 8 - NUEVO ESPACIO -->
-            <div class="trabajo-card">
-                <h3>Cuantización</h3>
-                <p>Descripción del octavo trabajo. Aquí puedes poner tu nuevo proyecto.</p>
-                <div class="trabajo-info">
-                    <span class="info-badge">🌐 HTML</span>
-                    <span class="info-badge">📅 Próximamente</span>
-                </div>
-                <div class="btn-group">
-                    <a href="cuantizacioon.html" class="btn">
-                        👁️ Ver Trabajo
-                    </a>
-                </div>
-            </div>
-
-            <!-- Trabajo 9 - NUEVO ESPACIO -->
-            <div class="trabajo-card">
-                <h3>Prentreno</h3>
-                <p>Descripción del noveno trabajo. Aquí puedes poner tu nuevo proyecto.</p>
-                <div class="trabajo-info">
-                    <span class="info-badge">🌐 HTML</span>
-                    <span class="info-badge">📅 Próximamente</span>
-                </div>
-                <div class="btn-group">
-                    <a href="preentreno.html" class="btn">
-                        👁️ Ver Trabajo
-                    </a>
-                </div>
-            </div>
-
-            <!-- Trabajo 10 - NUEVO ESPACIO -->
-            <div class="trabajo-card">
-                <h3>destilacion</h3>
-                <p>Descripción del décimo trabajo. Aquí puedes poner tu nuevo proyecto.</p>
-                <div class="trabajo-info">
-                    <span class="info-badge">🌐 HTML</span>
-                    <span class="info-badge">📅 Próximamente</span>
-                </div>
-                <div class="btn-group">
-                    <a href="destilacion.html" class="btn">
-                        👁️ Ver Trabajo
-                    </a>
-                </div>
-            </div>
-
-            <!-- Trabajo 11 - NUEVO ESPACIO -->
-            <div class="trabajo-card">
-                <h3>Fine Tunning</h3>
-                <p>Descripción del undécimo trabajo. Aquí puedes poner tu nuevo proyecto.</p>
-                <div class="trabajo-info">
-                    <span class="info-badge">🌐 HTML</span>
-                    <span class="info-badge">📅 Próximamente</span>
-                </div>
-                <div class="btn-group">
-                    <a href="finetunning.html" class="btn">
-                        👁️ Ver Trabajo
-                    </a>
-                </div>
-            </div>
-
-            <!-- Trabajo 12 - NUEVO ESPACIO -->
-            <div class="trabajo-card">
-                <h3>Nuevo Trabajo 12</h3>
-                <p>Descripción del duodécimo trabajo. Aquí puedes poner tu nuevo proyecto.</p>
-                <div class="trabajo-info">
-                    <span class="info-badge">🌐 HTML</span>
-                    <span class="info-badge">📅 Próximamente</span>
-                </div>
-                <div class="btn-group">
-                    <a href="trabajo12.html" class="btn">
-                        👁️ Ver Trabajo
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <footer>
-        <p>&copy; 2025 - Mis Trabajos Académicos</p>
-    </footer>
+    <h1>Índice del repositorio</h1>
+    <ul>
+        <li><a href="index.php">index.php</a></li>
+        <li><a href="login.php">login.php</a></li>
+        <li><a href="logout.php">logout.php</a></li>
+        <li><a href="registro.php">registro.php</a></li>
+        <li><a href="servicios.php">servicios.php</a></li>
+        <li><a href="proyectos.php">proyectos.php</a></li>
+        <li><a href="nosotros.php">nosotros.php</a></li>
+        <li><a href="contacto.php">contacto.php</a></li>
+        <li><a href="aceptar_cookies.php">aceptar_cookies.php</a></li>
+        <li><a href="chatbot_api.php">chatbot_api.php</a></li>
+    </ul>
 </body>
 </html>
+
